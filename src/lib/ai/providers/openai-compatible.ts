@@ -1,4 +1,6 @@
 import {
+  DIAGNOSTIC_JSON_SCHEMA,
+  EVALUATION_JSON_SCHEMA,
   buildSystemInstruction,
   buildUserPrompt,
   parseJsonObject,
@@ -8,7 +10,7 @@ import {
   AIProviderError,
   AIProviderId,
   EvaluatorInput,
-  RawEvaluationPayload,
+  RawProviderResponse,
 } from '../types';
 
 export interface OpenAICompatibleModelOption {
@@ -23,6 +25,8 @@ export interface OpenAICompatibleConfig {
   getBaseUrl: () => string | undefined;
   getConfiguredModel?: () => string | undefined;
   defaultModels: OpenAICompatibleModelOption[];
+  selectModels?: (input: EvaluatorInput) => OpenAICompatibleModelOption[];
+  supportsJsonSchema?: boolean;
   extraHeaders?: () => Record<string, string>;
   timeoutMs?: number;
 }
@@ -41,6 +45,16 @@ function isRetryableStatus(status: number): boolean {
   );
 }
 
+function isJsonSchemaRejection(status: number, body: string): boolean {
+  if (status !== 400) return false;
+  const lower = body.toLowerCase();
+  return (
+    lower.includes('json_schema') ||
+    lower.includes('response_format') ||
+    lower.includes('structured')
+  );
+}
+
 export function createOpenAICompatibleAdapter(
   config: OpenAICompatibleConfig
 ): AIProviderAdapter {
@@ -54,7 +68,7 @@ export function createOpenAICompatibleAdapter(
       return Boolean(config.getApiKey()?.trim() && config.getBaseUrl()?.trim());
     },
 
-    async evaluate(input: EvaluatorInput): Promise<RawEvaluationPayload> {
+    async evaluate(input: EvaluatorInput): Promise<RawProviderResponse> {
       const apiKey = config.getApiKey()?.trim();
       const rawBaseUrl = config.getBaseUrl()?.trim();
       if (!apiKey || !rawBaseUrl) {
@@ -64,93 +78,134 @@ export function createOpenAICompatibleAdapter(
       }
 
       const endpoint = `${rawBaseUrl.replace(/\/+$/, '')}/chat/completions`;
+      const baseModels = config.selectModels
+        ? config.selectModels(input)
+        : config.defaultModels;
+
       const configuredModel = config.getConfiguredModel?.()?.trim();
       const matchedDefault = configuredModel
-        ? config.defaultModels.find((m) => m.model === configuredModel)
+        ? baseModels.find((m) => m.model === configuredModel)
         : undefined;
       const candidates: OpenAICompatibleModelOption[] = configuredModel
         ? [
             matchedDefault ?? { model: configuredModel },
-            ...config.defaultModels.filter((m) => m.model !== configuredModel),
+            ...baseModels.filter((m) => m.model !== configuredModel),
           ]
-        : config.defaultModels;
+        : baseModels;
 
+      const useStrictSchema = Boolean(config.supportsJsonSchema);
       const systemPrompt = buildSystemInstruction(
         input.lessonId,
         input.stepType,
         true
       );
       const userPrompt = buildUserPrompt(input);
-      const maxTokens = input.stepType === 'diagnostic' ? 450 : 750;
+      const maxTokens = input.stepType === 'diagnostic' ? 280 : 560;
+      const jsonSchema =
+        input.stepType === 'diagnostic'
+          ? DIAGNOSTIC_JSON_SCHEMA
+          : EVALUATION_JSON_SCHEMA;
 
       let lastError: AIProviderError | undefined;
 
       for (const candidate of candidates) {
-        try {
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-              ...(config.extraHeaders ? config.extraHeaders() : {}),
-            },
-            body: JSON.stringify({
+        const formatModes: Array<'json_schema' | 'json_object'> =
+          useStrictSchema ? ['json_schema', 'json_object'] : ['json_object'];
+
+        for (const mode of formatModes) {
+          try {
+            const responseFormat =
+              mode === 'json_schema'
+                ? { type: 'json_schema', json_schema: jsonSchema }
+                : { type: 'json_object' };
+
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+                ...(config.extraHeaders ? config.extraHeaders() : {}),
+              },
+              body: JSON.stringify({
+                model: candidate.model,
+                temperature: 0.1,
+                max_tokens: maxTokens,
+                response_format: responseFormat,
+                ...(candidate.extraBody ?? {}),
+                messages: [
+                  { role: 'system', content: systemPrompt },
+                  { role: 'user', content: userPrompt },
+                ],
+              }),
+              signal: AbortSignal.timeout(timeoutMs),
+            });
+
+            if (!response.ok) {
+              const errorBody = await response.text().catch(() => '');
+              if (
+                mode === 'json_schema' &&
+                isJsonSchemaRejection(response.status, errorBody)
+              ) {
+                continue;
+              }
+              const retryable = isRetryableStatus(response.status);
+              lastError = new AIProviderError(
+                config.id,
+                `${config.name} (${candidate.model}) HTTP ${response.status}: ${errorBody.slice(0, 200)}`,
+                { status: response.status, retryable }
+              );
+              if (!retryable) {
+                throw lastError;
+              }
+              break;
+            }
+
+            const data = (await response.json()) as {
+              choices?: Array<{ message?: { content?: string | null } }>;
+              usage?: {
+                prompt_tokens?: number;
+                completion_tokens?: number;
+                total_tokens?: number;
+              };
+            };
+            const rawText = data.choices?.[0]?.message?.content;
+            if (!rawText || typeof rawText !== 'string') {
+              lastError = new AIProviderError(
+                config.id,
+                `${config.name} (${candidate.model}) returned empty content`,
+                { retryable: true }
+              );
+              break;
+            }
+
+            return {
+              payload: parseJsonObject(rawText),
               model: candidate.model,
-              temperature: 0.15,
-              max_tokens: maxTokens,
-              response_format: { type: 'json_object' },
-              ...(candidate.extraBody ?? {}),
-              messages: [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: userPrompt },
-              ],
-            }),
-            signal: AbortSignal.timeout(timeoutMs),
-          });
-
-          if (!response.ok) {
-            const errorBody = await response.text().catch(() => '');
-            const retryable = isRetryableStatus(response.status);
+              usage: data.usage
+                ? {
+                    promptTokens: data.usage.prompt_tokens,
+                    completionTokens: data.usage.completion_tokens,
+                    totalTokens: data.usage.total_tokens,
+                  }
+                : undefined,
+            };
+          } catch (err) {
+            if (err instanceof AIProviderError) {
+              lastError = err;
+              if (!err.retryable) {
+                throw err;
+              }
+              break;
+            }
             lastError = new AIProviderError(
               config.id,
-              `${config.name} (${candidate.model}) HTTP ${response.status}: ${errorBody.slice(0, 200)}`,
-              { status: response.status, retryable }
+              `${config.name} (${candidate.model}) request failed: ${
+                err instanceof Error ? err.message : 'Unknown error'
+              }`,
+              { retryable: true, cause: err }
             );
-            if (!retryable) {
-              throw lastError;
-            }
-            continue;
+            break;
           }
-
-          const data = (await response.json()) as {
-            choices?: Array<{ message?: { content?: string | null } }>;
-          };
-          const rawText = data.choices?.[0]?.message?.content;
-          if (!rawText || typeof rawText !== 'string') {
-            lastError = new AIProviderError(
-              config.id,
-              `${config.name} (${candidate.model}) returned empty content`,
-              { retryable: true }
-            );
-            continue;
-          }
-
-          return parseJsonObject(rawText);
-        } catch (err) {
-          if (err instanceof AIProviderError) {
-            lastError = err;
-            if (!err.retryable) {
-              throw err;
-            }
-            continue;
-          }
-          lastError = new AIProviderError(
-            config.id,
-            `${config.name} (${candidate.model}) request failed: ${
-              err instanceof Error ? err.message : 'Unknown error'
-            }`,
-            { retryable: true, cause: err }
-          );
         }
       }
 

@@ -148,7 +148,10 @@ export function StepFinalChallenge({
                 rows={5}
                 maxLength={MAX_CHARS}
                 value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
+                onChange={(e) => {
+                  setAnswer(e.target.value);
+                  if (error) setError(null);
+                }}
                 disabled={isLoading}
                 placeholder="Escribe tu respuesta completa sin ayudas..."
                 className="min-h-[132px] sm:min-h-[160px] w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:opacity-60 transition-all"

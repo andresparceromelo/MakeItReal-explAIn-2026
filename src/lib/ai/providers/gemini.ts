@@ -8,7 +8,7 @@ import {
   AIProviderAdapter,
   AIProviderError,
   EvaluatorInput,
-  RawEvaluationPayload,
+  RawProviderResponse,
 } from '../types';
 
 const PER_ATTEMPT_TIMEOUT_MS = 7000;
@@ -89,7 +89,7 @@ export const geminiAdapter: AIProviderAdapter = {
     return Boolean(process.env.GEMINI_API_KEY?.trim());
   },
 
-  async evaluate(input: EvaluatorInput): Promise<RawEvaluationPayload> {
+  async evaluate(input: EvaluatorInput): Promise<RawProviderResponse> {
     const apiKey = process.env.GEMINI_API_KEY?.trim();
     if (!apiKey) {
       throw new AIProviderError('gemini', 'GEMINI_API_KEY missing', {
@@ -117,6 +117,7 @@ export const geminiAdapter: AIProviderAdapter = {
       false
     );
     const userPrompt = buildUserPrompt(input);
+    const maxOutputTokens = input.stepType === 'diagnostic' ? 280 : 560;
 
     let lastError: unknown;
     for (const candidate of candidates) {
@@ -126,7 +127,8 @@ export const geminiAdapter: AIProviderAdapter = {
           contents: userPrompt,
           config: {
             systemInstruction,
-            temperature: 0.15,
+            temperature: 0.1,
+            maxOutputTokens,
             ...(candidate.thinkingLevel
               ? { thinkingConfig: { thinkingLevel: candidate.thinkingLevel } }
               : {}),
@@ -140,7 +142,17 @@ export const geminiAdapter: AIProviderAdapter = {
         if (!rawText) {
           throw new Error('Empty response from Gemini');
         }
-        return parseJsonObject(rawText);
+        return {
+          payload: parseJsonObject(rawText),
+          model: candidate.model,
+          usage: response.usageMetadata
+            ? {
+                promptTokens: response.usageMetadata.promptTokenCount,
+                completionTokens: response.usageMetadata.candidatesTokenCount,
+                totalTokens: response.usageMetadata.totalTokenCount,
+              }
+            : undefined,
+        };
       } catch (err) {
         lastError = err;
         if (!isRetryableGeminiError(err)) {

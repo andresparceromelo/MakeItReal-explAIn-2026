@@ -30,11 +30,23 @@ export interface RawEvaluationPayload {
   retryHint?: unknown;
 }
 
+export interface TokenUsage {
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+}
+
+export interface RawProviderResponse {
+  payload: RawEvaluationPayload;
+  model?: string;
+  usage?: TokenUsage;
+}
+
 export interface AIProviderAdapter {
   readonly id: AIProviderId;
   readonly name: string;
   isConfigured(): boolean;
-  evaluate(input: EvaluatorInput): Promise<RawEvaluationPayload>;
+  evaluate(input: EvaluatorInput): Promise<RawProviderResponse>;
 }
 
 export class AIProviderError extends Error {

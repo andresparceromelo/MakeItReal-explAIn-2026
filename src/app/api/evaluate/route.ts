@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { LESSONS } from '@/data/lessons';
 import { evaluateInterviewAnswer } from '@/lib/ai/evaluator';
+import {
+  checkRateLimit,
+  deriveCanonicalQuestion,
+  sanitizeStage,
+  sanitizeTargetRole,
+  validateLinguisticQuality,
+} from '@/lib/ai/guardrails';
 import { NoAIProviderConfiguredError } from '@/lib/ai/types';
 import { EvaluateRequest, LessonId, StepType } from '@/types';
 
@@ -10,7 +16,27 @@ const MAX_ANSWER_LENGTH = 2000;
 const GENERIC_ERROR_MESSAGE =
   'No pudimos conectar con el orientador IA. Intenta de nuevo en unos segundos.';
 
+function extractClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  if (forwarded) {
+    const first = forwarded.split(',')[0]?.trim();
+    if (first) return first;
+  }
+  return request.headers.get('x-real-ip')?.trim() || 'local';
+}
+
 export async function POST(request: NextRequest) {
+  const clientIp = extractClientIp(request);
+  if (!checkRateLimit(clientIp)) {
+    return NextResponse.json(
+      {
+        error:
+          'Estás enviando muchas solicitudes seguidas. Espera unos segundos e intenta de nuevo.',
+      },
+      { status: 429 }
+    );
+  }
+
   let body: Partial<EvaluateRequest>;
 
   try {
@@ -22,15 +48,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const {
-    lessonId,
-    stepType,
-    targetRole,
-    stage,
-    question,
-    userAnswer,
-    attemptNumber,
-  } = body;
+  const { lessonId, stepType, targetRole, stage, userAnswer, attemptNumber } =
+    body;
 
   if (!lessonId || !VALID_LESSON_IDS.includes(lessonId)) {
     return NextResponse.json(
@@ -63,38 +82,49 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const lesson = LESSONS[lessonId];
-  const safeRole =
-    typeof targetRole === 'string' && targetRole.trim()
-      ? targetRole.trim().slice(0, 100)
-      : 'el puesto objetivo';
-  const safeStage =
-    typeof stage === 'string' && stage.trim()
-      ? stage.trim().slice(0, 100)
-      : 'Búsqueda laboral';
-  const safeQuestion =
-    typeof question === 'string' && question.trim()
-      ? question.trim().slice(0, 500)
-      : lesson.title;
+  const safeStage = sanitizeStage(stage);
+  const safeRole = sanitizeTargetRole(targetRole);
+  const canonicalQuestion = deriveCanonicalQuestion(
+    lessonId,
+    stepType,
+    safeRole
+  );
+
+  const linguisticError = validateLinguisticQuality(
+    trimmedAnswer,
+    canonicalQuestion
+  );
+  if (linguisticError) {
+    return NextResponse.json({ error: linguisticError }, { status: 400 });
+  }
+
   const safeAttempt =
-    typeof attemptNumber === 'number' && attemptNumber > 0 ? attemptNumber : 1;
+    typeof attemptNumber === 'number' && attemptNumber > 0
+      ? Math.min(3, Math.floor(attemptNumber))
+      : 1;
 
   try {
-    const { result, provider } = await evaluateInterviewAnswer({
-      lessonId,
-      stepType,
-      targetRole: safeRole,
-      stage: safeStage,
-      question: safeQuestion,
-      userAnswer: trimmedAnswer,
-      attemptNumber: safeAttempt,
-    });
+    const { result, provider, cached, model, usage } =
+      await evaluateInterviewAnswer({
+        lessonId,
+        stepType,
+        targetRole: safeRole,
+        stage: safeStage,
+        question: canonicalQuestion,
+        userAnswer: trimmedAnswer,
+        attemptNumber: safeAttempt,
+      });
 
-    return NextResponse.json(result, {
-      headers: {
-        'X-AI-Provider': provider,
-      },
-    });
+    const headers: Record<string, string> = {
+      'X-AI-Provider': provider,
+      'X-AI-Cache': cached ? 'HIT' : 'MISS',
+    };
+    if (model) headers['X-AI-Model'] = model;
+    if (typeof usage?.totalTokens === 'number') {
+      headers['X-AI-Tokens'] = String(usage.totalTokens);
+    }
+
+    return NextResponse.json(result, { headers });
   } catch (err) {
     if (err instanceof NoAIProviderConfiguredError) {
       console.error('AI evaluation failed: no provider configured');

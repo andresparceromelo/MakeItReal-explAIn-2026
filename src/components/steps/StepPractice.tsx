@@ -39,11 +39,13 @@ export function StepPractice({
   const [error, setError] = useState<string | null>(null);
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [evaluatedAttempt, setEvaluatedAttempt] = useState<number>(0);
+  const [lastEvaluatedText, setLastEvaluatedText] = useState<string>('');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const question = formatRoleQuestion(lesson.practiceQuestionTemplate, role);
   const trimmedLength = answer.trim().length;
+  const normalizedDraft = answer.trim().replace(/\s+/g, ' ').toLowerCase();
   const canSubmit =
     trimmedLength >= MIN_CHARS && trimmedLength <= MAX_CHARS && !isLoading;
 
@@ -54,6 +56,13 @@ export function StepPractice({
 
   async function evaluateAnswer(targetAttempt: number) {
     if (!canSubmit) return;
+
+    if (lastEvaluatedText && normalizedDraft === lastEvaluatedText) {
+      setError(
+        'Edita tu respuesta usando la pista antes de volver a evaluarla.'
+      );
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -85,6 +94,7 @@ export function StepPractice({
 
       setEvaluation(data as EvaluationResult);
       setEvaluatedAttempt(targetAttempt);
+      setLastEvaluatedText(normalizedDraft);
     } catch {
       setError(
         'No pudimos conectar con el orientador IA. Intenta de nuevo en unos segundos.'
@@ -181,7 +191,10 @@ export function StepPractice({
             rows={5}
             maxLength={MAX_CHARS}
             value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
+            onChange={(e) => {
+              setAnswer(e.target.value);
+              if (error) setError(null);
+            }}
             disabled={isLoading || (isCurrentAttemptEvaluated && (passedAll || reachedLimit))}
             placeholder="Escribe aquí tu respuesta aplicando las 3 partes de la fórmula..."
             className="min-h-[132px] sm:min-h-[160px] w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:bg-[#F0FAF5]/50 disabled:opacity-80 transition-all"
@@ -262,7 +275,7 @@ export function StepPractice({
               {evaluation.feedback}
             </p>
 
-            {(!passedAll || evaluation.retryHint) && (
+            {!passedAll && evaluation.retryHint.trim().length > 0 && (
               <div className="flex items-start gap-3 rounded-2xl bg-[#F0FAF5] border border-[#DDEAE4] p-4">
                 <Lightbulb
                   className="mt-0.5 h-5 w-5 shrink-0 text-[#FBBF24]"

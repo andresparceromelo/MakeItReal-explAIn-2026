@@ -1,4 +1,10 @@
 import { EvaluationResult } from '@/types';
+import {
+  buildCacheKey,
+  enforceCoachingGuardrails,
+  getCachedEvaluation,
+  setCachedEvaluation,
+} from './guardrails';
 import { normalizeEvaluationResult } from './prompts';
 import {
   customAdapter,
@@ -13,6 +19,7 @@ import {
   AIProviderId,
   EvaluatorInput,
   NoAIProviderConfiguredError,
+  TokenUsage,
 } from './types';
 
 const ADAPTERS: Record<AIProviderId, AIProviderAdapter> = {
@@ -65,12 +72,33 @@ export function resolveProviderChain(): AIProviderAdapter[] {
 
 export interface EvaluateOutput {
   result: EvaluationResult;
-  provider: AIProviderId;
+  provider: string;
+  cached: boolean;
+  model?: string;
+  usage?: TokenUsage;
 }
 
 export async function evaluateInterviewAnswer(
   input: EvaluatorInput
 ): Promise<EvaluateOutput> {
+  const cacheKey = buildCacheKey({
+    lessonId: input.lessonId,
+    stepType: input.stepType,
+    targetRole: input.targetRole,
+    stage: input.stage,
+    userAnswer: input.userAnswer,
+    attemptNumber: input.attemptNumber,
+  });
+
+  const cached = getCachedEvaluation(cacheKey);
+  if (cached) {
+    return {
+      result: cached.result,
+      provider: cached.provider,
+      cached: true,
+    };
+  }
+
   const chain = resolveProviderChain();
   if (chain.length === 0) {
     throw new NoAIProviderConfiguredError();
@@ -80,10 +108,28 @@ export async function evaluateInterviewAnswer(
 
   for (const adapter of chain) {
     try {
-      const raw = await adapter.evaluate(input);
-      return {
-        result: normalizeEvaluationResult(input.lessonId, raw),
+      const response = await adapter.evaluate(input);
+      const normalized = normalizeEvaluationResult(
+        input.lessonId,
+        response.payload
+      );
+      const guarded = enforceCoachingGuardrails(
+        input.lessonId,
+        input.stepType,
+        normalized
+      );
+
+      setCachedEvaluation(cacheKey, {
+        result: guarded,
         provider: adapter.id,
+      });
+
+      return {
+        result: guarded,
+        provider: adapter.id,
+        cached: false,
+        model: response.model,
+        usage: response.usage,
       };
     } catch (err) {
       lastError = err;
@@ -92,8 +138,6 @@ export async function evaluateInterviewAnswer(
         err instanceof Error ? err.message : err
       );
       if (err instanceof AIProviderError && !err.retryable) {
-        // Non-retryable auth/payload error on one provider should still allow fallback
-        // to another configured provider unless fallback is disabled.
         continue;
       }
     }
