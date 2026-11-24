@@ -22,7 +22,7 @@ export function BrandLogo({ compact = false }: BrandLogoProps) {
           MakeIt<span className="text-[#0E9F6E]">Real</span>
         </span>
         <span className="mt-0.5 text-[11px] sm:text-xs font-light tracking-wide text-[#5B6B65] leading-none">
-          hacelo real
+          &quot;hacelo real&quot;
         </span>
       </div>
     </div>
