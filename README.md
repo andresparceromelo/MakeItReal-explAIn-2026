@@ -13,7 +13,7 @@ Cada lección recorre 5 pasos: diagnóstico inicial, micro-lección interactiva,
 
 - **Framework:** Next.js (App Router) + TypeScript
 - **Estilos:** Tailwind CSS + `lucide-react`
-- **IA:** Google Gemini (`gemini-2.5-flash`) vía `@google/genai` con salidas estructuradas (`responseSchema`) en `POST /api/evaluate`
+- **IA:** Arquitectura multi-proveedor en `src/lib/ai/` con **Groq** como proveedor principal (`openai/gpt-oss-120b` / `openai/gpt-oss-20b` / `qwen/qwen3.8-27b`), fallback automático a **Google Gemini**, **OpenRouter**, **OpenAI** o cualquier proveedor compatible con OpenAI (`AI_BASE_URL` + `AI_API_KEY` + `AI_MODEL`), expuesto en `POST /api/evaluate`
 - **Persistencia:** `localStorage` del navegador (sin registro, sin base de datos)
 
 ## Configuración local
@@ -22,9 +22,10 @@ Cada lección recorre 5 pasos: diagnóstico inicial, micro-lección interactiva,
    ```bash
    npm install
    ```
-2. Crea `.env.local` a partir de `.env.local.example` y agrega tu clave de Gemini:
+2. Crea `.env.local` a partir de `.env.local.example` y agrega al menos una clave (por ejemplo `GROQ_API_KEY` como principal y/o `GEMINI_API_KEY` como respaldo):
    ```bash
-   GEMINI_API_KEY=tu_clave_aqui
+   GROQ_API_KEY=tu_clave_groq
+   GEMINI_API_KEY=tu_clave_gemini
    ```
 3. Inicia el servidor de desarrollo:
    ```bash
