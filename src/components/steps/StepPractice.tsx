@@ -121,7 +121,7 @@ export function StepPractice({
       </div>
 
       {/* Practice Question */}
-      <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-5 sm:p-6">
+      <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-4 sm:p-6">
         <p className="text-xs font-bold uppercase tracking-wide text-[#046C4E]">
           Tu turno de practicar
         </p>
@@ -131,15 +131,15 @@ export function StepPractice({
       </div>
 
       {/* Compact expandable 3-part formula reminder */}
-      <div className="rounded-2xl border border-[#DDEAE4] bg-[#F0FAF5] p-3.5">
+      <div className="rounded-2xl border border-[#DDEAE4] bg-[#F0FAF5] p-3.5 sm:p-4">
         <button
           type="button"
           onClick={() => setShowFormula((prev) => !prev)}
           aria-expanded={showFormula}
-          className="flex w-full items-center justify-between gap-2 text-left text-xs sm:text-sm font-bold text-[#046C4E] cursor-pointer"
+          className="flex min-h-[36px] w-full items-center justify-between gap-2 text-left text-xs sm:text-sm font-bold text-[#046C4E] cursor-pointer"
         >
           <span className="inline-flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-[#0E9F6E]" strokeWidth={2.2} />
+            <Sparkles className="h-4 w-4 shrink-0 text-[#0E9F6E]" strokeWidth={2.2} />
             <span>
               Recordatorio:{' '}
               {lesson.formulaParts.map((p) => p.title).join(' → ')}
@@ -153,11 +153,11 @@ export function StepPractice({
         </button>
 
         {showFormula && (
-          <div className="mt-3 grid grid-cols-1 gap-2 border-t border-[#DDEAE4] pt-3 animate-fade-slide">
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2.5 border-t border-[#DDEAE4] pt-3 animate-fade-slide">
             {lesson.formulaParts.map((part, idx) => (
               <div
                 key={part.id}
-                className="rounded-xl bg-[#FFFFFF] px-3 py-2 text-xs sm:text-sm text-[#10231C]"
+                className="rounded-xl bg-[#FFFFFF] px-3 py-2.5 text-xs sm:text-sm text-[#10231C]"
               >
                 <span className="font-bold text-[#046C4E]">
                   {idx + 1}. {part.title}:
@@ -184,11 +184,11 @@ export function StepPractice({
             onChange={(e) => setAnswer(e.target.value)}
             disabled={isLoading || (isCurrentAttemptEvaluated && (passedAll || reachedLimit))}
             placeholder="Escribe aquí tu respuesta aplicando las 3 partes de la fórmula..."
-            className="w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:bg-[#F0FAF5]/50 disabled:opacity-80 transition-all"
+            className="min-h-[132px] sm:min-h-[160px] w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:bg-[#F0FAF5]/50 disabled:opacity-80 transition-all"
           />
-          <div className="mt-2 flex items-center justify-between text-xs text-[#5B6B65]">
+          <div className="mt-2 flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 text-xs sm:text-sm text-[#5B6B65]">
             <span>Tu orientador IA revisará si incluiste las 3 partes.</span>
-            <span className="font-semibold">
+            <span className="shrink-0 font-semibold">
               {trimmedLength < MIN_CHARS
                 ? `Mínimo ${MIN_CHARS} caracteres (${trimmedLength}/${MIN_CHARS})`
                 : `${trimmedLength}/${MAX_CHARS}`}
@@ -226,7 +226,7 @@ export function StepPractice({
           <button
             type="submit"
             disabled={!canSubmit}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 transition-all duration-200 cursor-pointer"
+            className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 transition-all duration-200 cursor-pointer"
           >
             <span>Evaluar mi respuesta</span>
             <Sparkles className="h-4 w-4" strokeWidth={2.2} />
@@ -238,7 +238,7 @@ export function StepPractice({
       {evaluation && (
         <section
           aria-live="polite"
-          className="animate-fade-slide rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-5 sm:p-6 shadow-[0_8px_30px_rgb(16,35,28,0.06)] space-y-5"
+          className="animate-fade-slide rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 sm:p-6 shadow-[0_8px_30px_rgb(16,35,28,0.06)] space-y-5"
         >
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-extrabold text-[#10231C]">
@@ -287,7 +287,7 @@ export function StepPractice({
                   <button
                     type="button"
                     onClick={handleRetryFocus}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+                    className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
                   >
                     <span>
                       Mejorar mi respuesta (Intento {attemptNumber + 1} de{' '}
@@ -297,7 +297,7 @@ export function StepPractice({
                   <button
                     type="button"
                     onClick={onNext}
-                    className="w-full py-2 text-center text-sm font-semibold text-[#5B6B65] hover:text-[#046C4E] transition-colors cursor-pointer"
+                    className="min-h-[44px] w-full py-2 text-center text-sm font-semibold text-[#5B6B65] hover:text-[#046C4E] transition-colors cursor-pointer"
                   >
                     Ir al reto final
                   </button>
@@ -318,7 +318,7 @@ export function StepPractice({
                   <button
                     type="button"
                     onClick={onNext}
-                    className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+                    className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
                   >
                     <span>Ir al reto final sin ayudas</span>
                     <ArrowRight className="h-4 w-4" strokeWidth={2.4} />

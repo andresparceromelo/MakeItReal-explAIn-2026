@@ -129,7 +129,7 @@ export function StepFinalChallenge({
 
       {!finalEval ? (
         <>
-          <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-5 sm:p-6">
+          <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-4 sm:p-6">
             <p className="text-xs font-bold uppercase tracking-wide text-[#046C4E]">
               Nueva situación real
             </p>
@@ -151,11 +151,11 @@ export function StepFinalChallenge({
                 onChange={(e) => setAnswer(e.target.value)}
                 disabled={isLoading}
                 placeholder="Escribe tu respuesta completa sin ayudas..."
-                className="w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:opacity-60 transition-all"
+                className="min-h-[132px] sm:min-h-[160px] w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:opacity-60 transition-all"
               />
-              <div className="mt-2 flex items-center justify-between text-xs text-[#5B6B65]">
+              <div className="mt-2 flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1 text-xs sm:text-sm text-[#5B6B65]">
                 <span>Responde como en una llamada o entrevista real.</span>
-                <span className="font-semibold">
+                <span className="shrink-0 font-semibold">
                   {trimmedLength < MIN_CHARS
                     ? `Mínimo ${MIN_CHARS} caracteres (${trimmedLength}/${MIN_CHARS})`
                     : `${trimmedLength}/${MAX_CHARS}`}
@@ -172,7 +172,7 @@ export function StepFinalChallenge({
                 <button
                   type="button"
                   onClick={() => handleSubmit()}
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#DC2626] px-4 py-2 text-xs sm:text-sm font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer"
+                  className="inline-flex min-h-[40px] items-center gap-2 rounded-xl bg-[#DC2626] px-4 py-2 text-xs sm:text-sm font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer"
                 >
                   <RefreshCw className="h-4 w-4" />
                   Intentar de nuevo
@@ -189,7 +189,7 @@ export function StepFinalChallenge({
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 transition-all duration-200 cursor-pointer"
+                className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 transition-all duration-200 cursor-pointer"
               >
                 <span>Comprobar mi aprendizaje</span>
                 <ArrowRight className="h-4 w-4" strokeWidth={2.4} />
@@ -201,7 +201,7 @@ export function StepFinalChallenge({
         <div className="animate-fade-slide space-y-6">
           {/* Honest Progress Summary Banner */}
           <div
-            className={`rounded-3xl border p-5 sm:p-6 space-y-2 ${
+            className={`rounded-3xl border p-4 sm:p-6 space-y-2 ${
               finalEval.score === 3
                 ? 'border-[#A7F3D0] bg-[#F0FAF5]'
                 : 'border-[#FBBF24]/50 bg-[#FBBF24]/10'
@@ -226,8 +226,8 @@ export function StepFinalChallenge({
           </div>
 
           {/* 2-Card Before vs After Comparison */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-5 space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-5">
+            <div className="rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 sm:p-5 space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-extrabold uppercase tracking-wide text-[#5B6B65]">
                   Antes (Paso 1)
@@ -245,7 +245,7 @@ export function StepFinalChallenge({
               )}
             </div>
 
-            <div className="rounded-3xl border border-[#0E9F6E]/40 bg-[#FFFFFF] p-5 shadow-[0_8px_24px_rgb(14,159,110,0.08)] space-y-3">
+            <div className="rounded-3xl border border-[#0E9F6E]/40 bg-[#FFFFFF] p-4 sm:p-5 shadow-[0_8px_24px_rgb(14,159,110,0.08)] space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <span className="text-xs font-extrabold uppercase tracking-wide text-[#046C4E]">
                   Después (Reto final)
@@ -265,7 +265,7 @@ export function StepFinalChallenge({
           </div>
 
           {/* Coaching note */}
-          <div className="rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-5 space-y-3">
+          <div className="rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 sm:p-5 space-y-3">
             <p className="text-sm sm:text-base leading-relaxed text-[#10231C]">
               {finalEval.feedback}
             </p>
@@ -284,15 +284,15 @@ export function StepFinalChallenge({
           </div>
 
           {/* Copyable final answer */}
-          <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-5 space-y-3">
-            <div className="flex items-center justify-between gap-3">
+          <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-4 sm:p-5 space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <p className="text-xs font-extrabold uppercase tracking-wide text-[#046C4E]">
                 Tu respuesta final
               </p>
               <button
                 type="button"
                 onClick={handleCopyAnswer}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-[#DDEAE4] bg-[#FFFFFF] px-3 py-1.5 text-xs font-semibold text-[#046C4E] hover:bg-[#A7F3D0]/30 transition-colors cursor-pointer"
+                className="inline-flex min-h-[36px] items-center gap-1.5 rounded-xl border border-[#DDEAE4] bg-[#FFFFFF] px-3 py-1.5 text-xs font-semibold text-[#046C4E] hover:bg-[#A7F3D0]/30 transition-colors cursor-pointer"
               >
                 {copied ? (
                   <>
@@ -314,7 +314,7 @@ export function StepFinalChallenge({
 
           <Link
             href="/"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200"
+            className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200"
           >
             <span>Volver a mis lecciones</span>
             <ArrowRight className="h-4 w-4" strokeWidth={2.4} />

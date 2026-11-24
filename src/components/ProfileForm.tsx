@@ -57,7 +57,7 @@ export function ProfileForm({
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           placeholder="Ej: Camilo, Laura (opcional)"
-          className="mt-2 w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] px-4 py-3 text-base text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 transition-all"
+          className="mt-2 min-h-[46px] w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] px-4 py-3 text-base text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 transition-all"
         />
       </div>
 
@@ -65,7 +65,7 @@ export function ProfileForm({
         <span className="block text-sm font-bold text-[#10231C]">
           Tu etapa actual
         </span>
-        <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+        <div className="mt-2.5 grid grid-cols-1 min-[520px]:grid-cols-3 gap-2.5">
           {CAREER_STAGES.map((option) => {
             const selected = stage === option;
             return (
@@ -74,7 +74,7 @@ export function ProfileForm({
                 type="button"
                 onClick={() => setStage(option)}
                 aria-pressed={selected}
-                className={`rounded-2xl border px-3.5 py-3 text-left sm:text-center text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                className={`min-h-[46px] rounded-2xl border px-3.5 py-3 text-left min-[520px]:text-center text-sm font-semibold transition-all duration-200 cursor-pointer ${
                   selected
                     ? 'border-[#0E9F6E] bg-[#F0FAF5] text-[#046C4E] shadow-xs'
                     : 'border-[#DDEAE4] bg-[#FFFFFF] text-[#10231C] hover:border-[#0E9F6E]/50 hover:bg-[#F0FAF5]/50'
@@ -91,7 +91,7 @@ export function ProfileForm({
         <span className="block text-sm font-bold text-[#10231C]">
           Puesto al que aspiras
         </span>
-        <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+        <div className="mt-2.5 grid grid-cols-1 min-[380px]:grid-cols-2 gap-2.5">
           {TARGET_ROLES.map((role) => {
             const selected = targetRole === role;
             return (
@@ -100,7 +100,7 @@ export function ProfileForm({
                 type="button"
                 onClick={() => setTargetRole(role)}
                 aria-pressed={selected}
-                className={`rounded-2xl border px-3.5 py-3 text-left text-sm font-semibold transition-all duration-200 cursor-pointer ${
+                className={`min-h-[46px] rounded-2xl border px-3.5 py-3 text-left text-sm font-semibold leading-snug transition-all duration-200 cursor-pointer ${
                   selected
                     ? 'border-[#0E9F6E] bg-[#F0FAF5] text-[#046C4E] shadow-xs'
                     : 'border-[#DDEAE4] bg-[#FFFFFF] text-[#10231C] hover:border-[#0E9F6E]/50 hover:bg-[#F0FAF5]/50'
@@ -124,7 +124,7 @@ export function ProfileForm({
               value={customRole}
               onChange={(e) => setCustomRole(e.target.value)}
               placeholder="Escribe el puesto (ej: Cajero, Mesero, Operario)"
-              className="w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] px-4 py-3 text-sm sm:text-base text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 transition-all"
+              className="min-h-[46px] w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] px-4 py-3 text-base text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 transition-all"
             />
           </div>
         )}
@@ -147,14 +147,14 @@ export function ProfileForm({
           <button
             type="button"
             onClick={onCancel}
-            className="w-full sm:w-auto rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] px-5 py-3.5 text-sm font-semibold text-[#5B6B65] hover:bg-[#F0FAF5] hover:text-[#10231C] transition-all cursor-pointer"
+            className="min-h-[48px] w-full sm:w-auto rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] px-5 py-3.5 text-sm font-semibold text-[#5B6B65] hover:bg-[#F0FAF5] hover:text-[#10231C] transition-all cursor-pointer"
           >
             Cancelar
           </button>
         )}
         <button
           type="submit"
-          className="w-full flex-1 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.22)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+          className="min-h-[48px] w-full flex-1 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.22)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
           {submitLabel}
         </button>

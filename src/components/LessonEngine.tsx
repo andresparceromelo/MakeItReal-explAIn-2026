@@ -70,7 +70,7 @@ export function LessonEngine({ lessonId }: LessonEngineProps) {
   const role = getDisplayRole(activeProfile);
 
   return (
-    <div className="min-h-screen bg-[#FFFFFF] flex flex-col">
+    <div className="min-h-dvh bg-[#FFFFFF] flex flex-col">
       <TopNavbar
         mode="lesson"
         currentStep={step}
@@ -78,7 +78,7 @@ export function LessonEngine({ lessonId }: LessonEngineProps) {
         onExitLesson={() => router.push('/')}
       />
 
-      <main className="flex-1 mx-auto w-full max-w-xl px-4 py-6 sm:py-10">
+      <main className="flex-1 mx-auto w-full max-w-2xl lg:max-w-3xl px-4 sm:px-6 py-5 sm:py-8 lg:py-10 safe-pb">
         {!isClient ? (
           <div className="space-y-4 py-6 animate-pulse">
             <div className="h-6 w-36 rounded-full bg-[#F0FAF5]" />

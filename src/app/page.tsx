@@ -22,12 +22,12 @@ export default function HomePage() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-[#FFFFFF] flex flex-col">
+      <div className="min-h-dvh bg-[#FFFFFF] flex flex-col">
         <TopNavbar mode="onboarding" />
-        <main className="flex-1 mx-auto w-full max-w-xl px-4 sm:px-6 py-10">
-          <div className="space-y-4 animate-pulse">
-            <div className="h-9 w-3/4 rounded-2xl bg-[#F0FAF5]" />
-            <div className="h-5 w-full rounded-xl bg-[#F0FAF5]" />
+        <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 py-8 lg:py-12">
+          <div className="mx-auto max-w-xl lg:max-w-none space-y-4 animate-pulse">
+            <div className="h-9 w-3/4 max-w-md rounded-2xl bg-[#F0FAF5]" />
+            <div className="h-5 w-full max-w-lg rounded-xl bg-[#F0FAF5]" />
             <div className="mt-6 h-80 w-full rounded-3xl bg-[#F0FAF5]" />
           </div>
         </main>

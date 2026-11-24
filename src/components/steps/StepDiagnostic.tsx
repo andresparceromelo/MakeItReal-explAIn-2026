@@ -86,7 +86,7 @@ export function StepDiagnostic({
       </div>
 
       {/* Speech bubble question */}
-      <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-5 sm:p-6">
+      <div className="rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-4 sm:p-6">
         <p className="text-xs font-bold uppercase tracking-wide text-[#046C4E]">
           Pregunta de entrevista
         </p>
@@ -109,15 +109,15 @@ export function StepDiagnostic({
               onChange={(e) => setAnswer(e.target.value)}
               disabled={isLoading}
               placeholder="Escribe aquí lo que dirías en voz alta..."
-              className="w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:opacity-60 transition-all"
+              className="min-h-[132px] sm:min-h-[160px] w-full rounded-2xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 text-base leading-relaxed text-[#10231C] placeholder:text-[#5B6B65]/70 focus:border-[#0E9F6E] focus:outline-none focus:ring-4 focus:ring-[#A7F3D0]/40 disabled:opacity-60 transition-all"
             />
-            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm text-[#5B6B65]">
+            <div className="mt-2 flex flex-col min-[420px]:flex-row min-[420px]:items-center justify-between gap-1.5 text-xs sm:text-sm text-[#5B6B65]">
               <span>
                 Responde como lo harías hoy en una entrevista real. No hay
                 calificaciones malas aquí.
               </span>
               <span
-                className={`font-semibold ${
+                className={`shrink-0 font-semibold ${
                   trimmedLength > 0 && trimmedLength < MIN_CHARS
                     ? 'text-[#046C4E]'
                     : 'text-[#5B6B65]'
@@ -139,7 +139,7 @@ export function StepDiagnostic({
               <button
                 type="button"
                 onClick={() => handleSubmit()}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#DC2626] px-4 py-2 text-xs sm:text-sm font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer"
+                className="inline-flex min-h-[40px] items-center gap-2 rounded-xl bg-[#DC2626] px-4 py-2 text-xs sm:text-sm font-semibold text-white hover:opacity-90 transition-opacity cursor-pointer"
               >
                 <RefreshCw className="h-4 w-4" />
                 Intentar de nuevo
@@ -156,7 +156,7 @@ export function StepDiagnostic({
             <button
               type="submit"
               disabled={!canSubmit}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 transition-all duration-200 cursor-pointer"
+              className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 transition-all duration-200 cursor-pointer"
             >
               <span>Guardar mi punto de partida</span>
               <ArrowRight className="h-4 w-4" strokeWidth={2.4} />
@@ -164,7 +164,7 @@ export function StepDiagnostic({
           )}
         </form>
       ) : (
-        <div className="animate-fade-slide rounded-3xl border border-[#A7F3D0] bg-[#F0FAF5] p-6 space-y-5">
+        <div className="animate-fade-slide rounded-3xl border border-[#A7F3D0] bg-[#F0FAF5] p-5 sm:p-6 space-y-5">
           <div className="flex items-start gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#A7F3D0] text-[#046C4E]">
               <CheckCircle2 className="h-6 w-6" strokeWidth={2.4} />
@@ -183,7 +183,7 @@ export function StepDiagnostic({
           <button
             type="button"
             onClick={onNext}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <span>Ver la fórmula</span>
             <ArrowRight className="h-4 w-4" strokeWidth={2.4} />

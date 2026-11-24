@@ -25,14 +25,18 @@ export function TopNavbar({
     100,
     Math.max(0, Math.round((currentStep / totalSteps) * 100))
   );
+  const containerWidth =
+    mode === 'lesson' ? 'max-w-2xl lg:max-w-3xl' : 'max-w-5xl';
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#DDEAE4] bg-[#FFFFFF]/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 sm:h-[72px] max-w-4xl items-center justify-between gap-3 px-4 sm:px-6">
+      <div
+        className={`mx-auto flex h-16 sm:h-[72px] ${containerWidth} items-center justify-between gap-2 sm:gap-3 px-4 sm:px-6`}
+      >
         {mode === 'onboarding' && (
           <>
             <BrandLogo />
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#F0FAF5] px-3 py-1.5 text-xs sm:text-sm font-semibold text-[#046C4E]">
+            <div className="inline-flex min-h-[38px] items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#F0FAF5] px-3 py-1.5 text-xs sm:text-sm font-semibold text-[#046C4E]">
               <Sparkles className="h-4 w-4 text-[#0E9F6E]" strokeWidth={2.2} />
               <span>Entrenador IA</span>
             </div>
@@ -54,7 +58,8 @@ export function TopNavbar({
             >
               <Link
                 href="/"
-                className="inline-flex items-center gap-1.5 rounded-full bg-[#F0FAF5] px-3 py-2 text-xs sm:text-sm font-semibold text-[#046C4E] transition-colors hover:bg-[#A7F3D0]/40"
+                className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center gap-1.5 rounded-full bg-[#F0FAF5] px-2.5 sm:px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#046C4E] transition-colors hover:bg-[#A7F3D0]/40"
+                aria-label="Lecciones"
                 title="Lecciones"
               >
                 <BookOpen className="h-4 w-4 text-[#0E9F6E]" strokeWidth={2.2} />
@@ -62,7 +67,7 @@ export function TopNavbar({
               </Link>
 
               <div
-                className="inline-flex items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#F0FAF5] px-3 py-2 text-xs sm:text-sm font-bold text-[#10231C]"
+                className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#F0FAF5] px-2.5 sm:px-3.5 py-2 text-xs sm:text-sm font-bold text-[#10231C]"
                 title={`${completedCount} de 2 lecciones completadas`}
               >
                 <Trophy className="h-4 w-4 text-[#FBBF24]" strokeWidth={2.2} />
@@ -72,7 +77,7 @@ export function TopNavbar({
               <button
                 type="button"
                 onClick={onOpenProfile}
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs sm:text-sm font-semibold text-[#5B6B65] transition-colors hover:bg-[#F0FAF5] hover:text-[#0E9F6E] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F6E] cursor-pointer"
+                className="inline-flex min-h-[40px] min-w-[40px] items-center justify-center gap-1.5 rounded-full px-2.5 sm:px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#5B6B65] transition-colors hover:bg-[#F0FAF5] hover:text-[#0E9F6E] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#0E9F6E] cursor-pointer"
                 aria-label="Editar mi perfil"
                 title="Mi Perfil"
               >
@@ -90,20 +95,20 @@ export function TopNavbar({
                 <button
                   type="button"
                   onClick={onExitLesson}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#FFFFFF] px-3 py-1.5 text-xs sm:text-sm font-semibold text-[#5B6B65] transition-colors hover:bg-[#F0FAF5] hover:text-[#046C4E] cursor-pointer"
+                  className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#FFFFFF] px-2.5 sm:px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-[#5B6B65] transition-colors hover:bg-[#F0FAF5] hover:text-[#046C4E] cursor-pointer"
                   aria-label="Salir de la lección"
                 >
                   <ArrowLeft className="h-4 w-4" strokeWidth={2.2} />
-                  <span>Salir</span>
+                  <span className="hidden min-[360px]:inline">Salir</span>
                 </button>
               ) : (
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#FFFFFF] px-3 py-1.5 text-xs sm:text-sm font-semibold text-[#5B6B65] transition-colors hover:bg-[#F0FAF5] hover:text-[#046C4E]"
+                  className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full border border-[#DDEAE4] bg-[#FFFFFF] px-2.5 sm:px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-[#5B6B65] transition-colors hover:bg-[#F0FAF5] hover:text-[#046C4E]"
                   aria-label="Salir de la lección"
                 >
                   <ArrowLeft className="h-4 w-4" strokeWidth={2.2} />
-                  <span>Salir</span>
+                  <span className="hidden min-[360px]:inline">Salir</span>
                 </Link>
               )}
               <div className="hidden md:block pl-1">
@@ -111,7 +116,7 @@ export function TopNavbar({
               </div>
             </div>
 
-            <div className="flex-1 max-w-xs sm:max-w-sm px-2">
+            <div className="flex-1 min-w-[72px] max-w-xs sm:max-w-sm px-1 sm:px-2">
               <div
                 className="h-3 w-full overflow-hidden rounded-full bg-[#F0FAF5] border border-[#DDEAE4]"
                 role="progressbar"
@@ -127,7 +132,7 @@ export function TopNavbar({
               </div>
             </div>
 
-            <div className="shrink-0 rounded-full bg-[#F0FAF5] px-3 py-1.5 text-xs font-bold text-[#046C4E]">
+            <div className="shrink-0 rounded-full bg-[#F0FAF5] px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold text-[#046C4E]">
               Paso {currentStep} de {totalSteps}
             </div>
           </>

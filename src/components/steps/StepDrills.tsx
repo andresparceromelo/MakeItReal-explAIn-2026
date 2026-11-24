@@ -49,7 +49,7 @@ export function StepDrills({ lesson, onNext }: StepDrillsProps) {
       {/* Candidate sample quote */}
       <div
         key={currentDrill.id}
-        className="animate-fade-slide rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-5 sm:p-6 space-y-2"
+        className="animate-fade-slide rounded-3xl border border-[#DDEAE4] bg-[#F0FAF5] p-4 sm:p-6 space-y-2"
       >
         <p className="text-xs font-bold uppercase tracking-wide text-[#046C4E]">
           Respuesta de ejemplo
@@ -91,7 +91,7 @@ export function StepDrills({ lesson, onNext }: StepDrillsProps) {
                 type="button"
                 disabled={isAnswered}
                 onClick={() => handleSelect(part.id)}
-                className={`flex w-full items-center justify-between gap-3 rounded-2xl border p-4 text-left font-semibold transition-all duration-150 ${
+                className={`flex min-h-[52px] w-full items-center justify-between gap-3 rounded-2xl border p-3.5 sm:p-4 text-left font-semibold transition-all duration-150 ${
                   !isAnswered ? 'cursor-pointer active:scale-[0.99]' : 'cursor-default'
                 } ${buttonStyle}`}
               >
@@ -123,7 +123,7 @@ export function StepDrills({ lesson, onNext }: StepDrillsProps) {
       {/* Instant Feedback Card */}
       {isAnswered && (
         <div
-          className={`animate-fade-slide rounded-3xl border p-5 space-y-4 ${
+          className={`animate-fade-slide rounded-3xl border p-4 sm:p-6 space-y-4 ${
             isCorrect
               ? 'border-[#A7F3D0] bg-[#A7F3D0]/40'
               : 'border-[#DC2626]/30 bg-[#DC2626]/10'
@@ -158,7 +158,7 @@ export function StepDrills({ lesson, onNext }: StepDrillsProps) {
           <button
             type="button"
             onClick={handleContinue}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
+            className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
             <span>
               {isLastDrill ? 'Practicar con mi propia respuesta' : 'Siguiente'}

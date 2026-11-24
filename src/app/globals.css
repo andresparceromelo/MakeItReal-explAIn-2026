@@ -42,6 +42,16 @@ body {
   overflow-x: hidden;
 }
 
+button,
+a,
+[role="button"] {
+  touch-action: manipulation;
+}
+
+.safe-pb {
+  padding-bottom: max(1.25rem, env(safe-area-inset-bottom));
+}
+
 @keyframes fadeSlideUp {
   from {
     opacity: 0;
