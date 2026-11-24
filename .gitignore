@@ -34,6 +34,9 @@ yarn-error.log*
 .env*
 !.env.local.example
 
+# raw source video drafts (served videos live in public/videos/)
+docs/videos/
+
 # vercel
 .vercel
 

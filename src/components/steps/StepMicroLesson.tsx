@@ -12,10 +12,15 @@ import { LessonConfig } from '@/types';
 
 interface StepMicroLessonProps {
   lesson: LessonConfig;
+  stepNumber?: number;
   onNext: () => void;
 }
 
-export function StepMicroLesson({ lesson, onNext }: StepMicroLessonProps) {
+export function StepMicroLesson({
+  lesson,
+  stepNumber = 2,
+  onNext,
+}: StepMicroLessonProps) {
   const [cardIndex, setCardIndex] = useState(0);
   const totalCards = 4; // 3 formula parts + 1 comparison card
 
@@ -26,7 +31,7 @@ export function StepMicroLesson({ lesson, onNext }: StepMicroLessonProps) {
     <div className="animate-fade-slide space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="inline-flex items-center rounded-full bg-[#F0FAF5] px-3 py-1 text-xs font-bold text-[#046C4E]">
-          Paso 2 · Micro-lección
+          Paso {stepNumber} · Micro-lección
         </span>
         <span className="text-xs font-semibold text-[#5B6B65]">
           {lesson.formulaName}

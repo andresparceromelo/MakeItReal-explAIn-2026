@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TopNavbar } from '@/components/TopNavbar';
 import { StepDiagnostic } from '@/components/steps/StepDiagnostic';
+import { StepVideo } from '@/components/steps/StepVideo';
 import { StepMicroLesson } from '@/components/steps/StepMicroLesson';
 import { StepDrills } from '@/components/steps/StepDrills';
 import { StepPractice } from '@/components/steps/StepPractice';
@@ -22,6 +23,14 @@ interface LessonEngineProps {
   lessonId: LessonId;
 }
 
+type LessonStepType =
+  | 'diagnostic'
+  | 'video'
+  | 'micro'
+  | 'drills'
+  | 'practice'
+  | 'final';
+
 const DEFAULT_FALLBACK_PROFILE: UserProfile = {
   nickname: 'Participante',
   stage: '18-24 Primer empleo',
@@ -37,14 +46,26 @@ export function LessonEngine({ lessonId }: LessonEngineProps) {
   const progressMap = useAllLessonProgress();
   const progress = progressMap[lessonId];
 
-  const [step, setStep] = useState<1 | 2 | 3 | 4 | 5>(1);
+  const stepSequence: LessonStepType[] = lesson.video
+    ? ['diagnostic', 'video', 'micro', 'drills', 'practice', 'final']
+    : ['diagnostic', 'micro', 'drills', 'practice', 'final'];
+
+  const [stepIndex, setStepIndex] = useState(0);
   const [sessionDiagnosticEval, setSessionDiagnosticEval] = useState<
     EvaluationResult | undefined
   >(undefined);
 
+  const activeStep = stepSequence[stepIndex] ?? 'diagnostic';
+  const currentStepNumber = stepIndex + 1;
+  const totalSteps = stepSequence.length;
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [step]);
+  }, [stepIndex]);
+
+  function advanceStep() {
+    setStepIndex((prev) => Math.min(stepSequence.length - 1, prev + 1));
+  }
 
   function handleDiagnosticComplete(
     answer: string,
@@ -73,8 +94,8 @@ export function LessonEngine({ lessonId }: LessonEngineProps) {
     <div className="min-h-dvh bg-[#FFFFFF] flex flex-col">
       <TopNavbar
         mode="lesson"
-        currentStep={step}
-        totalSteps={5}
+        currentStep={currentStepNumber}
+        totalSteps={totalSteps}
         onExitLesson={() => router.push('/')}
       />
 
@@ -92,34 +113,58 @@ export function LessonEngine({ lessonId }: LessonEngineProps) {
               <span className="truncate text-[#10231C]">{lesson.title}</span>
             </div>
 
-            {step === 1 && (
+            {activeStep === 'diagnostic' && (
               <StepDiagnostic
                 lesson={lesson}
                 profile={activeProfile}
                 role={role}
+                nextLabel={lesson.video ? 'Ver video guía' : 'Ver la fórmula'}
+                nextHint={
+                  lesson.video
+                    ? 'Ahora mira un video corto para potenciarlo antes de revisar la fórmula y practicar.'
+                    : 'Ahora veamos una fórmula sencilla para potenciarlo. Al final compararemos tu avance real.'
+                }
                 onComplete={handleDiagnosticComplete}
-                onNext={() => setStep(2)}
+                onNext={advanceStep}
               />
             )}
 
-            {step === 2 && (
-              <StepMicroLesson lesson={lesson} onNext={() => setStep(3)} />
+            {activeStep === 'video' && lesson.video && (
+              <StepVideo
+                video={lesson.video}
+                stepNumber={currentStepNumber}
+                alreadyCompletedBefore={Boolean(progress.completed)}
+                onNext={advanceStep}
+              />
             )}
 
-            {step === 3 && (
-              <StepDrills lesson={lesson} onNext={() => setStep(4)} />
+            {activeStep === 'micro' && (
+              <StepMicroLesson
+                lesson={lesson}
+                stepNumber={currentStepNumber}
+                onNext={advanceStep}
+              />
             )}
 
-            {step === 4 && (
+            {activeStep === 'drills' && (
+              <StepDrills
+                lesson={lesson}
+                stepNumber={currentStepNumber}
+                onNext={advanceStep}
+              />
+            )}
+
+            {activeStep === 'practice' && (
               <StepPractice
                 lesson={lesson}
                 profile={activeProfile}
                 role={role}
-                onNext={() => setStep(5)}
+                stepNumber={currentStepNumber}
+                onNext={advanceStep}
               />
             )}
 
-            {step === 5 && (
+            {activeStep === 'final' && (
               <StepFinalChallenge
                 lesson={lesson}
                 profile={activeProfile}

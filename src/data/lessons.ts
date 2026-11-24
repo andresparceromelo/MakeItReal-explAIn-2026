@@ -27,6 +27,13 @@ export const LESSONS: Record<LessonId, LessonConfig> = {
       'Estructurar una presentación profesional usando Quién soy → Un logro concreto → Por qué encajo en este puesto.',
     estimatedMinutes: '10–15 min',
     formulaName: 'Fórmula Q-L-E (Quién soy → Logro → Encaje)',
+    video: {
+      src: '/videos/cuentame-sobre-ti-60s.mp4',
+      title: 'Cómo responder "Cuéntame sobre ti" en 60 segundos',
+      subtitle:
+        'Mira este video corto después de tu punto de partida para entender la idea clave antes de practicar.',
+      durationLabel: 'Video guía',
+    },
     formulaParts: [
       {
         id: 'part1',

@@ -60,6 +60,13 @@ export interface DrillQuestion {
   explanation: string;
 }
 
+export interface LessonVideo {
+  src: string;
+  title: string;
+  subtitle: string;
+  durationLabel?: string;
+}
+
 export interface LessonConfig {
   id: LessonId;
   number: 1 | 2;
@@ -69,6 +76,7 @@ export interface LessonConfig {
   competence: string;
   estimatedMinutes: string;
   formulaName: string;
+  video?: LessonVideo;
   formulaParts: [FormulaPart, FormulaPart, FormulaPart];
   weakExample: { text: string; whyWeak: string };
   strongExample: { text: string; breakdown: [string, string, string] };

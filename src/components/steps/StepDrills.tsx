@@ -6,10 +6,15 @@ import { LessonConfig } from '@/types';
 
 interface StepDrillsProps {
   lesson: LessonConfig;
+  stepNumber?: number;
   onNext: () => void;
 }
 
-export function StepDrills({ lesson, onNext }: StepDrillsProps) {
+export function StepDrills({
+  lesson,
+  stepNumber = 3,
+  onNext,
+}: StepDrillsProps) {
   const [drillIndex, setDrillIndex] = useState(0);
   const [selectedPart, setSelectedPart] = useState<
     'part1' | 'part2' | 'part3' | null
@@ -39,7 +44,7 @@ export function StepDrills({ lesson, onNext }: StepDrillsProps) {
     <div className="animate-fade-slide space-y-6">
       <div className="flex items-center justify-between gap-2">
         <span className="inline-flex items-center rounded-full bg-[#F0FAF5] px-3 py-1 text-xs font-bold text-[#046C4E]">
-          Paso 3 · Detecta el error
+          Paso {stepNumber} · Detecta el error
         </span>
         <span className="text-xs font-bold text-[#5B6B65]">
           Ejercicio {drillIndex + 1} de {drills.length}

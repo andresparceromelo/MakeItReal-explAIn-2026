@@ -9,6 +9,8 @@ interface StepDiagnosticProps {
   lesson: LessonConfig;
   profile: UserProfile;
   role: string;
+  nextLabel?: string;
+  nextHint?: string;
   onComplete: (answer: string, evaluation: EvaluationResult) => void;
   onNext: () => void;
 }
@@ -20,6 +22,8 @@ export function StepDiagnostic({
   lesson,
   profile,
   role,
+  nextLabel = 'Ver la fórmula',
+  nextHint = 'Ahora veamos una fórmula sencilla para potenciarlo. Al final compararemos tu avance real.',
   onComplete,
   onNext,
 }: StepDiagnosticProps) {
@@ -177,8 +181,7 @@ export function StepDiagnostic({
                 ¡Listo! Guardamos tu punto de partida.
               </h2>
               <p className="mt-1 text-sm sm:text-base leading-relaxed text-[#5B6B65]">
-                Ahora veamos una fórmula sencilla para potenciarlo. Al final
-                compararemos tu avance real.
+                {nextHint}
               </p>
             </div>
           </div>
@@ -188,7 +191,7 @@ export function StepDiagnostic({
             onClick={onNext}
             className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-2xl bg-[#0E9F6E] px-6 py-3.5 text-base font-semibold text-white shadow-[0_6px_20px_rgb(14,159,110,0.2)] hover:bg-[#046C4E] active:scale-[0.98] transition-all duration-200 cursor-pointer"
           >
-            <span>Ver la fórmula</span>
+            <span>{nextLabel}</span>
             <ArrowRight className="h-4 w-4" strokeWidth={2.4} />
           </button>
         </div>

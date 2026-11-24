@@ -19,6 +19,7 @@ interface StepPracticeProps {
   lesson: LessonConfig;
   profile: UserProfile;
   role: string;
+  stepNumber?: number;
   onNext: () => void;
 }
 
@@ -30,6 +31,7 @@ export function StepPractice({
   lesson,
   profile,
   role,
+  stepNumber = 4,
   onNext,
 }: StepPracticeProps) {
   const [answer, setAnswer] = useState('');
@@ -123,7 +125,7 @@ export function StepPractice({
     <div className="animate-fade-slide space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="inline-flex items-center rounded-full bg-[#F0FAF5] px-3 py-1 text-xs font-bold text-[#046C4E]">
-          Paso 4 · Práctica guiada con IA
+          Paso {stepNumber} · Práctica guiada con IA
         </span>
         <span className="rounded-full bg-[#F0FAF5] px-3 py-1 text-xs font-bold text-[#5B6B65]">
           Intento {attemptNumber} de {MAX_ATTEMPTS}
