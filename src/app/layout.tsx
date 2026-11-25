@@ -22,10 +22,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<'/'>) {
   return (
-    <html
-      lang="es"
-      className={`${plusJakartaSans.variable} h-full antialiased`}
-    >
+    <html lang="es" className={`${plusJakartaSans.variable} antialiased`}>
       <body className="min-h-dvh bg-[#FFFFFF] text-[#10231C] font-sans flex flex-col">
         {children}
       </body>

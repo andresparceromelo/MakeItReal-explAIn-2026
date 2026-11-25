@@ -29,9 +29,9 @@ export function TopNavbar({
     mode === 'lesson' ? 'max-w-2xl lg:max-w-3xl' : 'max-w-5xl';
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#DDEAE4] bg-[#FFFFFF]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-[#DDEAE4] bg-[#FFFFFF]/95 backdrop-blur-md">
       <div
-        className={`mx-auto flex h-16 sm:h-[72px] ${containerWidth} items-center justify-between gap-2 sm:gap-3 px-4 sm:px-6`}
+        className={`mx-auto flex h-14 sm:h-16 ${containerWidth} items-center justify-between gap-2 sm:gap-3 px-4 sm:px-6`}
       >
         {mode === 'onboarding' && (
           <>

@@ -142,7 +142,7 @@ export function StepVideo({
       {/* Modern Responsive Video Player Card */}
       <div
         ref={playerWrapperRef}
-        className="overflow-hidden rounded-3xl border border-[#DDEAE4] bg-[#10231C] shadow-[0_12px_36px_rgb(16,35,28,0.14)]"
+        className="mx-auto w-full max-w-[min(100%,calc(46dvh*16/9))] overflow-hidden rounded-3xl border border-[#DDEAE4] bg-[#10231C] shadow-[0_12px_36px_rgb(16,35,28,0.14)]"
       >
         <div className="relative aspect-video w-full bg-[#10231C]">
           {!videoError ? (

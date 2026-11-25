@@ -51,9 +51,9 @@ export function HubView({
         onOpenProfile={() => setIsProfileOpen(true)}
       />
 
-      <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 py-6 sm:py-8 lg:py-10">
+      <main className="flex-1 mx-auto w-full max-w-5xl px-4 sm:px-6 py-5 sm:py-6 lg:py-8">
         {/* Compact Greeting & Progress Header */}
-        <section className="animate-fade-slide mb-6 sm:mb-8 rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-5 sm:p-6 lg:p-7 shadow-[0_8px_30px_rgb(16,35,28,0.06)]">
+        <section className="animate-fade-slide mb-5 sm:mb-6 rounded-3xl border border-[#DDEAE4] bg-[#FFFFFF] p-4 sm:p-6 shadow-[0_8px_30px_rgb(16,35,28,0.06)]">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
             <div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#10231C]">
