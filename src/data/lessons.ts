@@ -115,6 +115,13 @@ export const LESSONS: Record<LessonId, LessonConfig> = {
     estimatedMinutes: '10–15 min',
     formulaName:
       'Fórmula C-H-P (Contexto honesto → Habilidad transferible → Prueba concreta)',
+    video: {
+      src: '/videos/responder-sin-experiencia.mp4',
+      title: 'Cómo responder cuando "no tienes experiencia"',
+      subtitle:
+        'Mira este video corto después de tu punto de partida para descubrir cómo convertir tu experiencia cotidiana en evidencia real.',
+      durationLabel: 'Video guía',
+    },
     formulaParts: [
       {
         id: 'part1',
